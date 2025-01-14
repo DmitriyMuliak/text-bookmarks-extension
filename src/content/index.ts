@@ -1,4 +1,4 @@
-import { ContentMessage, CreateSnippetPayload } from '../shared/types'
+import { SavedSnippet, ContentMessage, CreateSnippetPayload } from '../shared/types'
 import { SAVE_BTN_ID, HIGHLIGHT_MARK_ID, HIGHLIGHT_DURATION } from '../shared/constants'
 import { storageService } from '../shared/utils/storage'
 import { getXPathForNode, getNodeByXPath } from '../shared/utils/xpath'
@@ -61,7 +61,7 @@ function getOrCreateBtn(): HTMLElement {
   s.setProperty('height', 'auto', 'important')
 
   btn.innerHTML =
-    '<span style="font-size:18px !important;">\u{1F4CC}</span> <span style="color:#fff !important; display:inline !important;">Save snippet</span>'
+    '<span style="font-size:18px !important;">📌</span> <span style="color:#fff !important; display:inline !important;">Save snippet</span>'
 
   btn.addEventListener(
     'mousedown',
@@ -152,10 +152,10 @@ async function handleSave(): Promise<void> {
   pending = null
 
   const btn = getOrCreateBtn()
-  btn.innerHTML = '<span>\u23F3</span><span>Saving...</span>'
+  btn.innerHTML = '<span>⏳</span><span>Saving...</span>'
 
   const payload: CreateSnippetPayload = {
-    title: snap.text.length > 60 ? snap.text.slice(0, 60) + '\u2026' : snap.text,
+    title: snap.text.length > 60 ? snap.text.slice(0, 60) + '…' : snap.text,
     text: snap.text,
     url: location.href,
     domain: location.hostname,
@@ -169,18 +169,18 @@ async function handleSave(): Promise<void> {
   try {
     await storageService.addSnippet(payload)
     window.getSelection()?.removeAllRanges()
-    btn.innerHTML = '<span>\u2713</span><span>Saved!</span>'
+    btn.innerHTML = '<span>✓</span><span>Saved!</span>'
     btn.style.background = '#059669'
     setTimeout(() => {
-      btn.innerHTML = '<span>\u{1F4CC}</span><span>Save snippet</span>'
+      btn.innerHTML = '<span>📌</span><span>Save snippet</span>'
       btn.style.background = '#6366f1'
       hideBtn()
     }, 1400)
   } catch (err) {
-    btn.innerHTML = '<span>\u2717</span><span>Failed</span>'
+    btn.innerHTML = '<span>✗</span><span>Failed</span>'
     btn.style.background = '#dc2626'
     setTimeout(() => {
-      btn.innerHTML = '<span>\u{1F4CC}</span><span>Save snippet</span>'
+      btn.innerHTML = '<span>📌</span><span>Save snippet</span>'
       btn.style.background = '#6366f1'
     }, 2000)
     console.error('[TextBookmarks] Save failed:', err)
@@ -213,7 +213,7 @@ function animateHighlight(mark: HTMLElement): void {
   }, HIGHLIGHT_DURATION)
 }
 
-function highlightByXPath(snippet: import('../shared/types').SavedSnippet): boolean {
+function highlightByXPath(snippet: SavedSnippet): boolean {
   const startNode = getNodeByXPath(snippet.xpath)
   const endNode = getNodeByXPath(snippet.endXpath)
   if (!startNode || !endNode) return false
@@ -237,7 +237,7 @@ function highlightByXPath(snippet: import('../shared/types').SavedSnippet): bool
   }
 }
 
-function highlightByTextSearch(snippet: import('../shared/types').SavedSnippet): void {
+function highlightByTextSearch(snippet: SavedSnippet): void {
   const searchText = snippet.text.slice(0, 50)
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
     acceptNode: (n) => {
@@ -284,7 +284,7 @@ function highlightByTextSearch(snippet: import('../shared/types').SavedSnippet):
   }
 }
 
-function highlightSnippet(snippet: import('../shared/types').SavedSnippet): void {
+function highlightSnippet(snippet: SavedSnippet): void {
   removeHighlight()
   if (!highlightByXPath(snippet)) highlightByTextSearch(snippet)
 }
