@@ -9,9 +9,10 @@ Chrome Extension (MV3) that allows users to save text selections as bookmarks, w
 See the extension in action: saving a selection, navigating back, and automatic highlighting.
 
 [**Watch Demonstration Video (MP4)**]
-_(Tip: To show a video player directly on GitHub, drag and drop the video file into the README editor on the GitHub website.)_
 
-https://github.com/user-attachments/assets/17e4d0af-5c29-4fda-a608-1ebb0be5934c
+https://github.com/user-attachments/assets/515d6752-b9c4-4534-ab3b-7e00e3557b37
+
+
 
 
 ## 🏗 Architecture & Data Flow
